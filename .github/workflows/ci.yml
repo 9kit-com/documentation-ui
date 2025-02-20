@@ -35,7 +35,7 @@ jobs:
 
   bundle-stable:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/develop'
     needs: setup
     steps:
       - uses: actions/checkout@v2
@@ -56,7 +56,7 @@ jobs:
 
   bundle-dev:
     runs-on: ubuntu-latest
-    if: github.ref != 'refs/heads/master'
+    if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/develop'
     needs: setup
     steps:
       - uses: actions/checkout@v2
