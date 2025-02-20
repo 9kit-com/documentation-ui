@@ -2,6 +2,8 @@ name: Build Bundle. Includes linting.
 
 on:
   pull_request:
+    types: [opened, synchronize]
+  workflow_dispatch:
 
 jobs:
 
