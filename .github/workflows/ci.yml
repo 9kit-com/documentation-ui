@@ -1,0 +1,100 @@
+name: CI
+
+on:
+    pull_request:
+      types: [opened, synchronize]
+    workflow_dispatch:
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache NPM
+        uses: actions/cache@v2
+        with:
+          path: .cache/npm
+          key: ${{ runner.os }}-npm-cache
+      - name: Install Dependencies
+        run: npm install --quiet --no-progress --cache=.cache/npm
+
+  lint:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache NPM
+        uses: actions/cache@v2
+        with:
+          path: .cache/npm
+          key: ${{ runner.os }}-npm-cache
+      - name: Install Dependencies
+        run: npm install --quiet --no-progress --cache=.cache/npm
+      - name: Lint
+        run: node_modules/.bin/gulp lint
+
+  bundle-stable:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    needs: setup
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache NPM
+        uses: actions/cache@v2
+        with:
+          path: .cache/npm
+          key: ${{ runner.os }}-npm-cache
+      - name: Install Dependencies
+        run: npm install --quiet --no-progress --cache=.cache/npm
+      - name: Bundle
+        run: node_modules/.bin/gulp bundle
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ui-bundle
+          path: build/ui-bundle.zip
+
+  bundle-dev:
+    runs-on: ubuntu-latest
+    if: github.ref != 'refs/heads/master'
+    needs: setup
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache NPM
+        uses: actions/cache@v2
+        with:
+          path: .cache/npm
+          key: ${{ runner.os }}-npm-cache
+      - name: Install Dependencies
+        run: npm install --quiet --no-progress --cache=.cache/npm
+      - name: Bundle
+        run: node_modules/.bin/gulp bundle
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ui-bundle
+          path: build/ui-bundle.zip
+          retention-days: 1
+
+  pages:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    needs: setup
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache NPM
+        uses: actions/cache@v2
+        with:
+          path: .cache/npm
+          key: ${{ runner.os }}-npm-cache
+      - name: Install Dependencies
+        run: npm install --quiet --no-progress --cache=.cache/npm
+      - name: Build Preview
+        run: node_modules/.bin/gulp preview:build
+      - name: Remove Unnecessary Files
+        run: rm -rf public/_/{helpers,layouts,partials}
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
