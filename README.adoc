@@ -206,6 +206,66 @@ If you need to include source maps in the bundle, you can do so by setting the `
 
 In this case, the bundle will include the source maps, which can be used for debugging your production site.
 
+== Testing with Act Runner
+
+This project includes GitHub Actions workflow files that can be tested locally using https://github.com/nektos/act[Act Runner].
+
+Act Runner allows you to run GitHub Actions workflows locally, which is useful for testing changes before pushing them to GitHub.
+
+=== Prerequisites
+
+To use Act Runner, you need:
+
+* https://www.docker.com/[Docker] installed and running
+* https://github.com/nektos/act[Act Runner] installed
+
+=== Running Tests
+
+There are multiple ways to run tests in this project:
+
+==== Using npm
+
+The simplest way to run tests is using npm:
+
+[source,bash]
+----
+npm test
+----
+
+This will run all tests in the `tests/` directory.
+
+==== Using Act Runner
+
+We've also provided a script to run the GitHub Actions workflow locally using Act Runner:
+
+[source,bash]
+----
+npm run test:act
+# or directly:
+./act-test.sh
+----
+
+This script will:
+
+. Check if Act Runner is installed
+. Run the GitHub Actions workflow defined in `.github/workflows/ci.yml`
+. Report the results
+
+For more detailed information about using Act Runner with this project, see the `.github/ACT_RUNNER_README.md` file.
+
+==== Running Individual Tests
+
+You can also run individual tests directly:
+
+[source,bash]
+----
+# Run CSS format tests
+node tests/css-format-test.js
+
+# Run all tests with the test runner
+tests/run-tests.sh
+----
+
 == Copyright and License
 
 Copyright (C) 2017-present OpenDevise Inc. and the Antora Project.
