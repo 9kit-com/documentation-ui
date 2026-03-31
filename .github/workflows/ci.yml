@@ -106,8 +106,10 @@ jobs:
     steps:
       - name: Dispatch rebuild to documentation repo
         env:
-          GH_TOKEN: ${{ secrets.DOCS_REPO_DISPATCH_TOKEN }}
+          GH_TOKEN_RAW: ${{ secrets.DOCS_REPO_DISPATCH_TOKEN }}
         run: |
+          export GH_TOKEN="$(printf %s "$GH_TOKEN_RAW" | tr -d '\r\n')"
+
           jq -nc \
             --arg source_repo "$GITHUB_REPOSITORY" \
             --arg source_path "https://github.com/$GITHUB_REPOSITORY/releases/download/continuous/ui-bundle.zip" \
