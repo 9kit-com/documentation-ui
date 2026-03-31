@@ -9,6 +9,15 @@
   var supportsCopy = window.navigator.clipboard
   var svgAs = config.svgAs
   var uiRootPath = (config.uiRootPath == null ? window.uiRootPath : config.uiRootPath) || '.'
+  var pageCopyButton = document.querySelector('.toolbar .page-copy-button')
+
+  if (pageCopyButton) {
+    if (supportsCopy) {
+      pageCopyButton.addEventListener('click', writePageToClipboard.bind(pageCopyButton))
+    } else {
+      pageCopyButton.hidden = true
+    }
+  }
 
   ;[].slice.call(document.querySelectorAll('.doc pre.highlight, .doc .literalblock pre')).forEach(function (pre) {
     var code, language, lang, copy, toast, toolbox
@@ -68,6 +77,27 @@
   function writeToClipboard (code) {
     var text = code.innerText.replace(TRAILING_SPACE_RX, '')
     if (code.dataset.lang === 'console' && text.startsWith('$ ')) text = extractCommands(text)
+    window.navigator.clipboard.writeText(text).then(
+      function () {
+        this.classList.add('clicked')
+        this.offsetHeight // eslint-disable-line no-unused-expressions
+        this.classList.remove('clicked')
+      }.bind(this),
+      function () {}
+    )
+  }
+
+  function writePageToClipboard () {
+    var article = document.querySelector('article.doc')
+    if (!article) return
+
+    var articleClone = article.cloneNode(true)
+    var pagination = articleClone.querySelector('.pagination')
+    if (pagination) pagination.remove()
+
+    var text = articleClone.innerText.replace(TRAILING_SPACE_RX, '').trim()
+    if (!text) return
+
     window.navigator.clipboard.writeText(text).then(
       function () {
         this.classList.add('clicked')

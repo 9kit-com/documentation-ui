@@ -5,5 +5,11 @@
   {{/with}}
 {{> breadcrumbs}}
 {{> page-versions}}
+  <button class="page-copy-button" type="button" title="Copy page content" aria-label="Copy page content">
+    <svg class="copy-icon" aria-hidden="true">
+      <use href="{{{uiRootPath}}}/img/octicons-16.svg#icon-clippy"></use>
+    </svg>
+    <span class="copy-toast" aria-hidden="true">Copied!</span>
+  </button>
 {{> edit-this-page}}
 </div>
