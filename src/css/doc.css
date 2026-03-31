@@ -250,8 +250,22 @@
   margin-top: 1.5rem;
 }
 
+.doc .tablecontainer {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.doc > table.tableblock,
+.doc :not(.tablecontainer) > table.tableblock {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
 .doc table.tableblock {
   font-size: calc(15 / var(--rem-base) * 1rem);
+  min-width: 100%;
+  width: max-content;
 }
 
 .doc p.tableblock + p.tableblock {
